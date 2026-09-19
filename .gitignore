@@ -1,0 +1,32 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# Recorded sessions and participant data never belong in the repo
+data/
+sessions/
+*.mp4
+*.avi
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+
+# C++ build
+cpp/build/
+*.o
+*.a
