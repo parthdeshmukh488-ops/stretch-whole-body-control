@@ -10,6 +10,14 @@ controller's joint-limit violations to zero. A behaviour-cloned policy that
 demonstrates why the filter has to be there. And a C++ port of the filter,
 cross-checked against the Python reference case by case.
 
+![The robot running, with the filter intervening](docs/figures/05_demo.gif)
+
+Grey is the lift mast, blue the telescoping arm, the red star is the target.
+The arm turns orange whenever the filter is overriding the controller. In the
+second half the target needs height and reach at once, and the tipping margin
+in the lower trace falls to exactly zero and stops there — the filter walks the
+robot up to the constraint and not past it.
+
 **Status:** personal project, rebuilt and published 2026. Python 3.10+, numpy
 for the core; PyTorch only for the cloning module.
 
@@ -19,6 +27,7 @@ pytest                              # 52 tests, no robot required
 python examples/01_solver_benchmark.py
 python examples/02_safety_benchmark.py
 python examples/03_behaviour_cloning.py   # needs the learning extra
+python examples/04_demo_animation.py   # renders the gif above
 python examples/make_figures.py
 ```
 
@@ -236,7 +245,7 @@ cpp/
 tools/
   generate_golden.py      regenerates the C++ reference values
 examples/
-  01..03, make_figures.py the numbers and pictures above
+  01..04, make_figures.py the numbers, the gif and the pictures above
 ```
 
 ---
