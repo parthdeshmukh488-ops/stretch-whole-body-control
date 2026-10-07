@@ -30,3 +30,8 @@ desktop.ini
 cpp/build/
 *.o
 *.a
+
+# Downloaded models (tools/fetch_menagerie.py) and colcon output
+third_party/
+install/
+log/
