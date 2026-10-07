@@ -24,14 +24,15 @@ Eigen::Matrix<double, N, 1> vec(const std::array<double, N>& a) {
 
 }  // namespace
 
+// Golden values carry 12 significant digits, so agreement is checked to 1e-9.
 TEST(Golden, KinematicsMatchPython) {
   const StretchKinematics kin;
   for (const auto& c : kGoldenCases) {
     const JointVector q = vec(c.q);
-    EXPECT_LT((kin.position(q) - vec(c.position)).norm(), 1e-12);
+    EXPECT_LT((kin.position(q) - vec(c.position)).norm(), 1e-9);
     const Jacobian expected =
         Eigen::Map<const Eigen::Matrix<double, 3, 8, Eigen::RowMajor>>(c.jacobian.data());
-    EXPECT_LT((kin.jacobian(q) - expected).norm(), 1e-12);
+    EXPECT_LT((kin.jacobian(q) - expected).norm(), 1e-9);
   }
 }
 
@@ -39,7 +40,7 @@ TEST(Golden, JacobianTransposeStepMatchesPython) {
   const StretchKinematics kin;
   for (const auto& c : kGoldenCases) {
     const JointVector step = jacobian_transpose_step(kin, vec(c.q), vec(c.target));
-    EXPECT_LT((step - vec(c.jt_step)).norm(), 1e-12);
+    EXPECT_LT((step - vec(c.jt_step)).norm(), 1e-9);
   }
 }
 
@@ -53,11 +54,11 @@ TEST(Golden, FilterBoxAndTippingMatchPython) {
     // Python box is not inverted.
     for (int j = 0; j < 8; ++j) {
       if (c.box_lower[j] <= c.box_upper[j]) {
-        EXPECT_NEAR(filter.box_lower()(j), c.box_lower[j], 1e-12);
-        EXPECT_NEAR(filter.box_upper()(j), c.box_upper[j], 1e-12);
+        EXPECT_NEAR(filter.box_lower()(j), c.box_lower[j], 1e-9);
+        EXPECT_NEAR(filter.box_upper()(j), c.box_upper[j], 1e-9);
       }
     }
-    EXPECT_NEAR(tipping_margin(q), c.tipping_margin, 1e-12);
+    EXPECT_NEAR(tipping_margin(q), c.tipping_margin, 1e-9);
   }
 }
 

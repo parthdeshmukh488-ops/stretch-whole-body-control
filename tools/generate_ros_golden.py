@@ -37,8 +37,14 @@ def jt_step(model: StretchModel, q: np.ndarray, target: np.ndarray) -> np.ndarra
     return step * (MAX_STEP / norm) if norm > MAX_STEP else step
 
 
+def rounded(values) -> np.ndarray:
+    return np.array([float(f"{v:.12g}") for v in np.ravel(values)])
+
+
 def fmt(values) -> str:
-    return "{" + ", ".join(f"{v:.17g}" for v in np.ravel(values)) + "}"
+    # 12 significant digits: enough to catch any real drift, and identical on every
+    # platform (the last bits of sin and cos differ between maths libraries).
+    return "{" + ", ".join(f"{v:.12g}" for v in np.ravel(values)) + "}"
 
 
 def main() -> None:
@@ -48,8 +54,10 @@ def main() -> None:
     rng = np.random.default_rng(20261007)
     cases = []
     for _ in range(6):
-        q = model.random_configuration(rng)
-        target = model.position(model.random_configuration(rng))
+        # Inputs are rounded exactly as they are printed, so C++ and Python start
+        # from identical numbers.
+        q = rounded(model.random_configuration(rng))
+        target = rounded(model.position(model.random_configuration(rng)))
         lower, upper = flt.build_box(q)
         cases.append(
             "  {"
@@ -62,7 +70,7 @@ def main() -> None:
                     fmt(jt_step(model, q, target)),
                     fmt(lower),
                     fmt(upper),
-                    f"{tipping.margin(q):.17g}",
+                    f"{tipping.margin(q):.12g}",
                 ]
             )
             + "},"
